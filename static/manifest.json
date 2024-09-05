@@ -1,0 +1,13 @@
+{
+    "name": "Animal Log",
+    "description": "a log for them animals",
+    "display": "standalone",
+    "start_url": "/",
+    "icons": [
+      {
+        "src": "icons/icon_512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
