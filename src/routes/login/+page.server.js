@@ -27,7 +27,7 @@ export const actions = {
             };
         }
         
-        throw redirect(303, '/');
+        throw redirect(303, '/animals');
     },
     google: async({ locals, cookies }) => {
         const provider = (await locals.pb.collection('users').listAuthMethods()).authProviders.find((p) => p.name === 'google');
