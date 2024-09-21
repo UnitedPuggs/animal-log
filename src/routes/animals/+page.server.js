@@ -1,9 +1,15 @@
 import { pb } from '$lib/pocketbase';
 
-export async function load({ locals }) {
-    const records = await pb.collection("animals").getFullList({
-        filter: `owner="${locals.pb.authStore.model.id}"`
+async function getAnimals(user) {
+    const record = await pb.collection("animals").getFullList({
+        filter: `owner="${user}"`
     });
 
-    return { records }
+    return record;
+}
+
+export async function load({ locals }) {
+    return { 
+    records: await getAnimals(locals.pb.authStore.model.id)
+    }
 }
