@@ -13,6 +13,6 @@ export async function load({ locals }) {
     const user = locals.pb.authStore.model.id;
 
     return {
-        record: await getAnimals(user)
+        record: getAnimals(user)
     }
 }

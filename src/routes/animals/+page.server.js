@@ -10,6 +10,6 @@ async function getAnimals(user) {
 
 export async function load({ locals }) {
     return { 
-        records: await getAnimals(locals.pb.authStore.model.id)
+        records: getAnimals(locals.pb.authStore.model.id)
     }
 }
