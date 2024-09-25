@@ -19,6 +19,7 @@
             <h3 class="font-bold text-2xl mt-8">Your Animals</h3>
             <section class="flex flex-wrap gap-3 justify-center border-2 p-4 border-black rounded-xl shadow bg-pink-50">
                 {#each records as record}
+                    <a href="/animals/{record.id}">
                     <div 
                     class="flex flex-col border-2 border-black
                     bg-white box-shadow p-2 rounded-md 
@@ -33,6 +34,7 @@
                             {/each}
                         </section>
                     </div>
+                    </a>
                 {/each}
             </section>
         {/if}

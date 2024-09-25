@@ -24,7 +24,7 @@
                 {/await}
             </select>
             <label for="food" class="font-semibold">Food*</label>
-            <input type="text" name="food" class="border border-black rounded-md px-2 py-1 shadow" placeholder="What did you feed {selected?.name}?" />
+            <input type="text" name="food" class="border border-black rounded-md px-2 py-1 shadow" placeholder="What did you feed {typeof(selected?.name) !== "undefined" ? selected?.name : "your animal"}?" />
             <button class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95">Add Food</button>
         </form>
     </section>
