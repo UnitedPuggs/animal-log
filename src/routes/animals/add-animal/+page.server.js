@@ -5,13 +5,13 @@ export const actions = {
     add: async({ locals, request }) => {
         const formData = await request.formData();
         const data = Object.fromEntries([...formData]);
-        const email = locals.pb.authStore.model.id;
+        const id = locals.pb.authStore.model.id;
         
         const dates = Object.keys(data).filter(keys => keys != "name" && keys != "description");
         
         const pb_data = { 
             "name": data["name"],
-            "owner": email,
+            "owner": id,
             "description": data["description"],
             "dates": dates
         };
