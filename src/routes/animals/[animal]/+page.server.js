@@ -4,6 +4,7 @@ async function getFeedings(animal) {
     const record = await pb.collection("feedings").getFullList({
         filter: `animal="${animal}"`,
         sort: '-created',
+        expand: 'animal'
     });
 
     return record;

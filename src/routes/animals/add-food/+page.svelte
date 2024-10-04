@@ -19,7 +19,7 @@
                     <option disabled hidden selected>Loading...</option>
                 {:then record}
                     {#each record as animal}
-                        {#if animal.name == data.animal}
+                        {#if data.animal && animal.name.toLowerCase() == data.animal.toLowerCase()}
                             <option value={animal.id} selected>{animal.name}</option>
                         {:else}
                             <option value={animal.id}>{animal.name}</option>
