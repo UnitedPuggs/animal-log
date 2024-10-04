@@ -1,6 +1,6 @@
 import { pb } from '$lib/pocketbase';
 
-export async function POST({ request, locals }) {
+export async function GET({ request, locals }) {
     const user = locals.pb.authStore.model.id;
     const { animal, food } = await request.json();
     const record = await pb.collection('animals').getFirstListItem(`owner="${user}"`, {
@@ -10,11 +10,11 @@ export async function POST({ request, locals }) {
     const animalId = record.id;
     
     const data = {
-        "food": food,
-        "animal": animalId
+        "food": "placeholder",
+        "animal": "n4goymvcbg31puy"
     };
 
     const feedRecord = await pb.collection("feedings").create(data);
     
-    return new Response(JSON.stringify(feedRecord));
+    return new Response(null, { status: 204 });
 }
