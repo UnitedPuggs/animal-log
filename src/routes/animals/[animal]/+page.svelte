@@ -1,8 +1,7 @@
 <script>
     export let data;
 
-    console.log(data);
-    const name = data.record[0].expand.animal.name;
+    const name = (data.record.length > 0 ? data.record[0].expand.animal.name : "placeholder");
 
     function convertDate(dateStr) {
         const date = new Date(dateStr).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
@@ -14,6 +13,7 @@
     <title>{name}'s page!</title>
 </svelte:head>
 
+{#if data.record.length > 0}
 <div class="border-2 border-black rounded-xl bg-white p-2 shadow">
     <h3 class="font-bold text-2xl text-center pb-2">{name}'s Feedings</h3>
     <hr class="border-black pb-2"/>
@@ -25,3 +25,6 @@
         {/each}
     </section>
 </div>
+{:else}
+    <h5>NO FEEDINGS TO SHOW</h5>
+{/if}
