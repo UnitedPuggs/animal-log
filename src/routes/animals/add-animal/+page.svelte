@@ -2,7 +2,7 @@
     import DateSelector from '$lib/Animals/DateSelector.svelte';
     import { enhance } from '$app/forms';
 
-    let formLoading = false;
+    let formLoading = $state(false);
 </script>
 
 <svelte:head>

@@ -1,11 +1,13 @@
 <script>
-    export let data;
+    let { data } = $props();
 
     const name = (data.record.length > 0 ? data.record[0].expand.animal.name : "placeholder");
 
     function convertDate(dateStr) {
-        const date = new Date(dateStr).toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
-        return date;
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const DATE = new Date(dateStr);
+        const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: tz })} at ${DATE.toLocaleTimeString('en-US', { timeZone: tz, minute: '2-digit', hour: '2-digit' })}`
+        return CONVERTED;
     }   
 </script>
 

@@ -14,10 +14,12 @@ export const actions = {
     add: async({ locals, request }) => {
         const formData = await request.formData();
         const data = Object.fromEntries([...formData]);
+        const DATE = new Date();
 
         const feed_data = {
             "food": data.food,
-            "animal": data.animal
+            "animal": data.animal,
+            "fed": DATE
         };
 
         const record = await pb.collection('feedings').create(feed_data);

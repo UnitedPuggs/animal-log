@@ -1,5 +1,6 @@
 <script>
-    export let data;
+	 import * as Card from "$lib/components/ui/card/index.js";
+    let { data } = $props();
 </script>
 
 <svelte:head>
@@ -13,7 +14,7 @@
         <h1 class="text-2xl">Welcome to Animal Log!</h1>
         <p>here for all your animal logging needs</p>
     </hgroup>
-    <div class="rounded-xl shadow p-2 border w-full lg:w-96 mt-4">
+    <div class="rounded-xl p-2 border border-black w-full lg:w-96 mt-4 bg-white">
         <div class="flex flex-col p-6 space-y-1">
             <h3 class="font-semibold text-2xl">Login here</h3>
             <hr class="border border-black">
@@ -31,15 +32,15 @@
                 <span class="w-full border-t"></span>
             </div>
             <div class="relative flex justify-center text-xs uppercase">
-                <span style="background-color: beige;" class="px-1">or continue with</span>
+                <span class="px-1 bg-white">or continue with</span>
             </div>
         </div>
         <form method="post" action="?/login">
             <div class="flex flex-col">
                 <label for="username">Username</label>
-                <input type="text" name="username" class="rounded-md shadow border p-1" placeholder="Your username here" readonly />
+                <input type="text" name="username" class="rounded-md shadow border border-black p-1" placeholder="Your username here" readonly />
                 <label for="password">Password</label>
-                <input type="password" name="password" class="rounded-md shadow border p-1" placeholder="Your password here" readonly />
+                <input type="password" name="password" class="rounded-md shadow border border-black p-1" placeholder="Your password here" readonly />
             </div>
         </form>
     </div>

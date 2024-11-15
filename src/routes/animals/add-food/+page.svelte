@@ -1,7 +1,7 @@
 <script>
-    export let data;
+    let { data } = $props();
 
-    let selected; 
+    let selected = $state(); 
 </script>
 
 <svelte:head>

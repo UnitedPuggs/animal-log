@@ -1,5 +1,5 @@
 <script>
-    export let data;
+    let { data } = $props();
 </script>
 
 <svelte:head>
@@ -7,11 +7,6 @@
 </svelte:head>
 
 <div class="flex flex-col justify-center items-center">
-    <section class="flex gap-2">
-        <a href="/animals/add-animal" class="border-2 border-black rounded-lg p-2 font-bold bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95">Add Animal</a>
-        <a href="/animals/add-food" class="border-2 border-black rounded-lg p-2 font-bold bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95" data-sveltekit-preload-data="tap">Add Feeding</a>
-        <a href="/animals/inventory" class="border-2 border-black rounded-lg p-2 font-bold bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95">Inventory</a>
-    </section>
     {#await data.records}
         <span>Loading your animals...</span>
     {:then records}

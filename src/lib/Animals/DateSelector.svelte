@@ -1,8 +1,8 @@
 <script>
     let days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    let checkedDays = [false, false, false, false, false, false, false];
+    let checkedDays = $state([false, false, false, false, false, false, false]);
 
-    export let loading;
+    let { loading } = $props();
 </script>
 
 <div class="border border-black rounded-lg p-2 w-full">
@@ -14,17 +14,16 @@
             w-full px-2 py-1 {day == "Sunday" ? "rounded-l-lg" : "rounded-none"} 
             {day == "Saturday" ? "rounded-r-lg" : "rounded-none"} 
             {checkedDays[days.indexOf(day)] ? "bg-sky-900" : "bg-sky-400"} text-white cursor-pointer transition-all duration-200 {!checkedDays[days.indexOf(day)] ? "feed-box-shadow" : "no-feed-shadow"}"
-            on:click={() => {
+            onclick={() => {
                 if(!loading)
                     checkedDays[days.indexOf(day)] = !checkedDays[days.indexOf(day)]
-                }
-            }
+                }}
             >
                 <input 
                 type="checkbox" 
                 name="{day}" 
                 class="hidden" 
-                on:click={() => checkedDays[days.indexOf(day)] = !checkedDays[days.indexOf(day)]} id="check-{day}" 
+                onclick={() => checkedDays[days.indexOf(day)] = !checkedDays[days.indexOf(day)]} id="check-{day}" 
                 bind:checked={checkedDays[days.indexOf(day)]}
                 disabled={loading}
                 >
