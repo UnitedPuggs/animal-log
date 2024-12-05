@@ -10,7 +10,7 @@
     }
 </script>
 
-<nav class="p-1 bg-green-100">
+<nav class="p-1 bg-green-100 border-b border-black">
     <div class="flex justify-between py-2 px-1">
         <a href="/" class="text-2xl font-bold">THE ANIMAL LOG</a>
         {#if $page.data?.user}

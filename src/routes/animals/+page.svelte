@@ -6,19 +6,20 @@
         const DATE = new Date(dateStr);
         const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: tz })}`
         return CONVERTED;
-    }   
+    }
+    
 </script>
 
 <svelte:head>
     <title>Your Animals</title>
 </svelte:head>
 
-<div class="flex lg:flex-row flex-col gap-2 justify-center items-center">
+<div class="flex lg:flex-row flex-col gap-2 justify-center items-center lg:items-start">
     {#await data.animals}
         <span>Loading your animals...</span>
     {:then animals}
         {#if animals.length > 0}
-            <div class="flex flex-col">
+            <div class="flex flex-col top-0">
                 <h3 class="font-bold text-2xl mt-8 text-center">Your Animals:</h3>
                 <p class="text-gray-400 text-sm text-center">Click on an animal to see their feedings!</p>
                 <section class="grid grid-cols-1 lg:grid-cols-4 gap-3 border-2 p-4 border-black rounded-xl shadow bg-pink-50">
@@ -49,19 +50,22 @@
     {#await data.feedings}
     <span>Loading feedings...</span>
     {:then feedings}
-        <div class="flex flex-col">
-            <h3 class="font-bold text-2xl mt-8 text-center min-h-0">Recent Feedings</h3>
-            <section class="grid grid-cols-1 gap-3 border-2 p-4 border-black rounded-xl shadow bg-pink-50">
-                {#each feedings as feeding}
-                    <div 
-                    class="flex flex-col border-2 border-black
-                    bg-white box-shadow p-2 rounded-md 
-                    lg:w-52 w-60 h-fit"
-                    >
-                    <span class="text-center">{feeding.expand.animal.name} fed on {convertDate(feeding.fed)}</span>
-                    </div>
-                {/each}
-            </section>
-        </div>
+        {#if feedings.length > 0}
+            <div class="flex flex-col top-0">
+                <h3 class="font-bold text-2xl mt-8 text-center max-h-32 overflow-y-auto">Recent Feedings:</h3>
+                <p class="text-gray-400 text-sm text-center">Here are your latest feedings</p>
+                <section class="grid grid-cols-1 gap-3 border-2 p-4 border-black rounded-xl shadow bg-pink-50">
+                    {#each feedings as feeding}
+                        <div 
+                        class="flex flex-col border-2 border-black
+                        bg-white box-shadow p-2 rounded-md 
+                        lg:w-52 w-60 h-fit"
+                        >
+                        <span class="text-center">{feeding.expand.animal.name} fed on {convertDate(feeding.fed)}</span>
+                        </div>
+                    {/each}
+                </section>
+            </div>
+        {/if}
     {/await}
 </div>

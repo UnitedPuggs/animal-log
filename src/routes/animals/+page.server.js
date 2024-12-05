@@ -15,8 +15,6 @@ async function getFeedings(user) {
         sort: '-created'
     });
 
-console.log(record)
-
     return record;
 }
 
