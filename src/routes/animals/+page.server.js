@@ -9,13 +9,13 @@ async function getAnimals(user) {
 }
 
 async function getFeedings(user) {
-    const record = await pb.collection("feedings").getFullList({
+    const record = await pb.collection("feedings").getList(1, 10, {
         filter: `animal.owner.id="${user}"`,
         expand: 'animal.owner',
         sort: '-created'
     });
 
-    return record;
+    return record.items;
 }
 
 export async function load({ locals }) {

@@ -43,6 +43,12 @@
                     {/each}
                 </section>
             </div>
+        {:else}
+            <div class="flex flex-col justify-center items-center gap-1">
+                <h5 class="font-bold text-2xl">NO ANIMALS TO SHOW</h5>
+                <p class="text-sm text-gray-400">Get started below 😊</p>
+                <a href="/animals/add-animal" class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95">Add Animal</a>
+            </div>
         {/if}
     {:catch error}
         <span>Error loading your animals: {error.message}</span>
