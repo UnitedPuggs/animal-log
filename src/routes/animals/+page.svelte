@@ -80,7 +80,7 @@
                     <div 
                     class="flex flex-col border-2 border-black
                     bg-white box-shadow p-2 rounded-md 
-                    lg:w-52 w-60 h-fit"
+                    lg:w-56 w-60 h-fit"
                     >
                     <span class="text-center">{feeding.expand.animal.name} fed on {convertDate(feeding.fed)}</span>
                     </div>

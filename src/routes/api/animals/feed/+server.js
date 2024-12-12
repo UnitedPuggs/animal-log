@@ -9,10 +9,12 @@ export async function GET({ url, locals }) {
 
     // All this shit just to get the animal id smh
     const animalId = record.id;
+    const now = new Date();
     
     const data = {
         "food": "Food",
-        "animal": animalId
+        "animal": animalId,
+        "fed": now
     };
 
     const feedRecord = await pb.collection("feedings").create(data);
