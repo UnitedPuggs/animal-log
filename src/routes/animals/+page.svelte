@@ -7,7 +7,7 @@
     let animals = $state([]);
     let feedings = $state([]);
 
-    console.log($page)
+    const NOW = new Date();
 
     onMount(async() => {
         const user = $page.data.user.id;
@@ -25,10 +25,17 @@
         feedings = feedings.items;
     });
 
+    function dateDiff(startDate) {
+        const START_DATE = new Date(startDate);
+        const TIME_DIFF = Math.abs(NOW - START_DATE);
+        const DATE_DIFF = Math.ceil(TIME_DIFF / (1000 * 60 * 60 * 24));
+        return DATE_DIFF;
+    }
+
     function convertDate(dateStr) {
-        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
         const DATE = new Date(dateStr);
-        const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: tz })}`
+        const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: TZ })}`
         return CONVERTED;
     }
     
@@ -51,7 +58,10 @@
                     bg-white box-shadow p-2 rounded-md 
                     transition-all duration-300 hover:translate-x-1 hover:no-shadow hover:scale-95 
                     lg:w-52 w-60 h-fit">
-                        <span><strong>{animal.name}</strong> the <strong>{animal.description}</strong></span>
+                        <span class="text-lg"><strong>{animal.name}</strong> the <strong>{animal.description}</strong></span>
+                        {#if animal.lastFed}
+                            <span class="text-gray-500">Last fed <strong>{dateDiff(convertDate(animal.lastFed))} {dateDiff(convertDate(animal.lastFed)) > 1 ? "days" : "day"}</strong> ago</span>
+                        {/if}
                         <span class="text-sm text-gray-400 my-1">Feed Days</span>
                         <hr class="mb-2"/>
                         <section class="flex gap-1 flex-wrap">

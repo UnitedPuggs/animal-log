@@ -8,6 +8,10 @@
     function close() {
         open = false;
     }
+
+    function copyLink() {
+        //TODO
+    }
 </script>
 
 <nav class="p-1 bg-green-100 border-b border-black">
@@ -54,6 +58,11 @@
                         >
                         Inventory
                         </a>
+                        <button 
+                        class="border-2 border-black rounded-xl p-2 font-bold bg-white transition-all duration-200 hover:scale-95"
+                        >
+                            Share Log
+                        </button>
                     </div>
                 </Sheet.Content>
             </Sheet.Root>

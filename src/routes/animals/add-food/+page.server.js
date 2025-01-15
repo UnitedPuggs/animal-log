@@ -24,6 +24,12 @@ export const actions = {
 
         const record = await pb.collection('feedings').create(feed_data);
 
+        const extdata = {
+            "lastFed": DATE
+        }
+
+        const feed = await pb.collection('animals').update(`${data.animal}`, extdata)
+
         throw redirect(302, '/animals')
     }
 }
