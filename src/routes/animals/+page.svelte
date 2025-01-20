@@ -74,6 +74,13 @@
                 {/each}
             </section>
         </div>
+        <div>
+            <h3 class="font-bold text-2xl mt-8 text-center">Upcoming Feedings:</h3>
+            <p class="text-gray-400 text-sm text-center">Soon-to-be feedings</p>
+            <section class="border-2 p-4 border-black rounded-xl shadow bg-pink-50">
+                cum
+            </section>
+        </div>
     {:else}
         <div class="flex flex-col justify-center items-center gap-1">
             <h5 class="font-bold text-2xl">NO ANIMALS TO SHOW</h5>

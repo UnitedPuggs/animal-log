@@ -10,7 +10,8 @@
     }
 
     function copyLink() {
-        //TODO
+        navigator.clipboard.writeText(`${window.location.origin}/animals/share/${$page.data.user.id}`);
+        alert(`Copied ${window.location.origin}/animals/share/${$page.data.user.id} to clipboard!`);
     }
 </script>
 
@@ -60,8 +61,9 @@
                         </a>
                         <button 
                         class="border-2 border-black rounded-xl p-2 font-bold bg-white transition-all duration-200 hover:scale-95"
+                        onclick={copyLink}
                         >
-                            Share Log
+                            Share your Log!
                         </button>
                     </div>
                 </Sheet.Content>
