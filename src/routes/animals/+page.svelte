@@ -6,6 +6,7 @@
 
     let animals = $state([]);
     let feedings = $state([]);
+    let upcomings = $state([]);
 
     const NOW = new Date();
 
@@ -22,7 +23,27 @@
             sort: '-created'
         });
 
+        // GET UPCOMING DATES FOR ALL ANIMALS
+        let queue = [];
+
+        animals.forEach((animal) => {
+            queue.push(findUpcomingFeedings(animal.dates).then((dates) => {
+                return dates.map((date) => ({
+                    animal: animal.name,
+                    date: new Date(date)
+                }));
+            }))
+        });
+
+        const UPCOMING_FEEDS_ARR = await Promise.all(queue);
+        const UPCOMING_FEEDS = UPCOMING_FEEDS_ARR.flat();
+
+        UPCOMING_FEEDS.sort((a, b) => a.date - b.date);
+
+        console.log(UPCOMING_FEEDS)
+
         feedings = feedings.items;
+        upcomings = UPCOMING_FEEDS;
     });
 
     function dateDiff(startDate) {
@@ -39,6 +60,29 @@
         return CONVERTED;
     }
     
+    async function findUpcomingFeedings(dates) {
+        const TODAY = new Date();
+        const CURR_DAY_IDX = TODAY.getDay();
+
+        const DAY_IDX = {
+            'Sunday': 0,
+            'Monday': 1,
+            'Tuesday': 2,
+            'Wednesday': 3,
+            'Thursday': 4,
+            'Friday': 5,
+            'Saturday': 6
+        };
+
+        const TARGET_IDX = dates.map(day => DAY_IDX[day]);
+
+        return  TARGET_IDX.map((target) => {
+            const DATE_DIFF = (target - CURR_DAY_IDX + 7) % 7 || 7;
+            let nextDate = new Date();
+            nextDate.setDate(TODAY.getDate() + DATE_DIFF);
+            return nextDate.toISOString();
+        });
+    }
 </script>
 
 <svelte:head>
@@ -56,7 +100,7 @@
                     <div 
                     class="flex flex-col border-2 border-black
                     bg-white box-shadow p-2 rounded-md 
-                    transition-all duration-300 hover:translate-x-1 hover:no-shadow hover:scale-95 
+                    transition-all hover:scale-95 
                     lg:w-52 w-60 h-fit">
                         <span class="text-lg"><strong>{animal.name}</strong> the <strong>{animal.description}</strong></span>
                         {#if animal.lastFed}
@@ -74,11 +118,18 @@
                 {/each}
             </section>
         </div>
-        <div>
+        <div class="flex flex-col">
             <h3 class="font-bold text-2xl mt-8 text-center">Upcoming Feedings:</h3>
             <p class="text-gray-400 text-sm text-center">Soon-to-be feedings</p>
-            <section class="border-2 p-4 border-black rounded-xl shadow bg-pink-50">
-                cum
+            <section class="flex flex-col gap-2 border-2 p-4 border-black rounded-xl shadow bg-pink-50 max-h-48 overflow-y-auto">
+                {#each upcomings as upcoming}
+                    <a
+                    href="/animals/add-food?animal={upcoming.animal}"
+                    class="border-2 border-black bg-white p-2 rounded-md transition-all hover:scale-95"
+                    >
+                        Upcoming feeding for <strong>{upcoming.animal}</strong> on <strong>{upcoming.date.toLocaleDateString('en-US')}</strong>
+                    </a>
+                {/each}
             </section>
         </div>
     {:else}
