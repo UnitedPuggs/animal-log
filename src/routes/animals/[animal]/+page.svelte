@@ -35,7 +35,7 @@
     <title>{data.name}'s page!</title>
 </svelte:head>
 
-<div class="flex flex-col">
+<div class="flex flex-col justify-center items-center">
     <!--- MODAL FOR REMOVING ANIMAL -->
     <dialog id="delete-animal" class="rounded-xl">
         <div class="flex flex-col p-6">
@@ -79,9 +79,9 @@
         <div class="flex flex-col border-2 border-black rounded-xl bg-white p-2 shadow lg:w-auto w-80">
             <h3 class="font-bold text-2xl text-center pb-2">{data.name}'s Feedings</h3>
             <hr class="border-black pb-2"/>
-            <section class="flex flex-row gap-1">
+            <section class="flex flex-row flex-wrap gap-1">
                 {#each feedings as food}
-                    <div class="flex gap-1 border border-black rounded-lg px-2 py-1 font-semibold lg:w-72">
+                    <div class="flex gap-1 border border-black rounded-lg px-2 py-1 font-semibold lg:w-72 h-14 lg:h-auto">
                         <section>
                             <span>{food.food} fed on {convertDate(food.fed)}</span>
                         </section>

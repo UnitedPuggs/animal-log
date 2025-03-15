@@ -36,11 +36,12 @@ export const actions = {
 
 export async function load({ locals, url }) {
     const user = locals.pb.authStore.model.id;
-    const animal = url.searchParams?.get('animal')
+    const animal = url.searchParams?.get('animal');
+    const date = url.searchParams?.get('date') || new Date(); // feeds are either today or from scheduled feeds
 
-    //Maybe I can use URL params and set the 'selected', so when the nfc sticker is scanned it'll have the animal selected.
     return {
         record: await getAnimals(user),
-        animal
+        animal,
+        date
     }
 }

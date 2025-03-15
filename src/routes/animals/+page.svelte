@@ -50,7 +50,7 @@
         const START_DATE = new Date(startDate);
         const TIME_DIFF = Math.abs(NOW - START_DATE);
         const DATE_DIFF = Math.ceil(TIME_DIFF / (1000 * 60 * 60 * 24));
-        return DATE_DIFF;
+        return DATE_DIFF - 1;
     }
 
     function convertDate(dateStr) {
@@ -103,8 +103,15 @@
                     transition-all hover:scale-95 
                     lg:w-52 w-60 h-fit">
                         <span class="text-lg"><strong>{animal.name}</strong> the <strong>{animal.description}</strong></span>
-                        {#if animal.lastFed}
-                            <span class="text-gray-500">Last fed <strong>{dateDiff(convertDate(animal.lastFed))} {dateDiff(convertDate(animal.lastFed)) > 1 ? "days" : "day"}</strong> ago</span>
+                        {#if animal.lastFed} <!-- Needs to also be able to account for feeding being today? -->
+                            <span class="text-gray-500">
+                                Last fed
+                                {#if dateDiff(convertDate(animal.lastFed)) == 0}
+                                    <strong>today</strong> 
+                                {:else}
+                                    <strong>{dateDiff(convertDate(animal.lastFed))} {dateDiff(convertDate(animal.lastFed)) > 1 ? "days" : "day"}</strong> ago
+                                {/if}
+                            </span>
                         {/if}
                         <span class="text-sm text-gray-400 my-1">Feed Days</span>
                         <hr class="mb-2"/>
@@ -124,7 +131,7 @@
             <section class="flex flex-col gap-2 border-2 p-4 border-black rounded-xl shadow bg-pink-50 max-h-48 overflow-y-auto">
                 {#each upcomings as upcoming}
                     <a
-                    href="/animals/add-food?animal={upcoming.animal}"
+                    href="/animals/add-food?animal={upcoming.animal}&date={upcoming.date.getFullYear()}-{upcoming.date.getMonth() + 1}-{upcoming.date.getDate()}"
                     class="border-2 border-black bg-white p-2 rounded-md transition-all hover:scale-95"
                     >
                         Upcoming feeding for <strong>{upcoming.animal}</strong> on <strong>{upcoming.date.toLocaleDateString('en-US')}</strong>

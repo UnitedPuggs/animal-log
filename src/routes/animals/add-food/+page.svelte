@@ -2,6 +2,7 @@
     let { data } = $props();
 
     let selected = $state(); 
+    let date = $state(new Date(data.date).toISOString().slice(0, 10) + " 00:00:00");
 </script>
 
 <svelte:head>
@@ -30,7 +31,7 @@
             <label for="food" class="font-semibold">Food*</label>
             <input type="text" name="food" class="border border-black rounded-md px-2 py-1 shadow" placeholder="What did you feed {typeof(selected?.name) !== "undefined" ? selected?.name : "your animal"}?" />
             <label for="fed" class="font-semibold">Date fed (optional)</label>
-            <input name="fed" type="datetime-local" class="border border-black rounded-md px-2 py-1 shadow">
+            <input name="fed" type="datetime-local" class="border border-black rounded-md px-2 py-1 shadow" value={date}>
             <button class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95">Add Food</button>
         </form>
     </section>
