@@ -1,5 +1,5 @@
-export const load = async({ locals }) => {
-    const user = locals.pb.authStore.model;
-    
-    return { user: structuredClone(user) }
-}
+export const load = async ({ locals }) => {
+	const user = locals.pb.authStore.model;
+
+	return { user: structuredClone(user) };
+};

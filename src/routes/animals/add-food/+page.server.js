@@ -1,47 +1,47 @@
-import { pb } from "$lib/pocketbase";
-import { redirect } from "@sveltejs/kit";
+import { pb } from '$lib/pocketbase';
+import { redirect } from '@sveltejs/kit';
 
 async function getAnimals(user) {
-    const animals = await pb.collection('animals').getFullList({
-        filter: `owner="${user}"`,
-        fields: "id, name"
-    });
+	const animals = await pb.collection('animals').getFullList({
+		filter: `owner="${user}"`,
+		fields: 'id, name'
+	});
 
-    return animals;
+	return animals;
 }
 
 export const actions = {
-    add: async({ locals, request }) => {
-        const formData = await request.formData();
-        const data = Object.fromEntries([...formData]);
-        const DATE = data.fed ? new Date(data.fed) : new Date();
+	add: async ({ locals, request }) => {
+		const formData = await request.formData();
+		const data = Object.fromEntries([...formData]);
+		const DATE = data.fed ? new Date(data.fed) : new Date();
 
-        const feed_data = {
-            "food": data.food,
-            "animal": data.animal,
-            "fed": DATE
-        };
+		const feed_data = {
+			food: data.food,
+			animal: data.animal,
+			fed: DATE
+		};
 
-        const record = await pb.collection('feedings').create(feed_data);
+		const record = await pb.collection('feedings').create(feed_data);
 
-        const extdata = {
-            "lastFed": DATE
-        }
+		const extdata = {
+			lastFed: DATE
+		};
 
-        const feed = await pb.collection('animals').update(`${data.animal}`, extdata)
+		const feed = await pb.collection('animals').update(`${data.animal}`, extdata);
 
-        throw redirect(302, '/animals')
-    }
-}
+		throw redirect(302, '/animals');
+	}
+};
 
 export async function load({ locals, url }) {
-    const user = locals.pb.authStore.model.id;
-    const animal = url.searchParams?.get('animal');
-    const date = url.searchParams?.get('date') || new Date(); // feeds are either today or from scheduled feeds
+	const user = locals.pb.authStore.model.id;
+	const animal = url.searchParams?.get('animal');
+	const date = url.searchParams?.get('date') || new Date(); // feeds are either today or from scheduled feeds
 
-    return {
-        record: await getAnimals(user),
-        animal,
-        date
-    }
+	return {
+		record: await getAnimals(user),
+		animal,
+		date
+	};
 }

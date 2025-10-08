@@ -1,23 +1,23 @@
-import { pb } from '$lib/pocketbase'
+import { pb } from '$lib/pocketbase';
 import { redirect } from '@sveltejs/kit';
 
 export const actions = {
-    edit: async({ locals, request, params }) => {
-        const formData = await request.formData();
-        const data = Object.fromEntries([...formData]);
-        const id = locals.pb.authStore.model.id;
-        
-        const dates = Object.keys(data).filter(keys => keys != "name" && keys != "description");
-        
-        const pb_data = { 
-            "name": data["name"],
-            "owner": id,
-            "description": data["description"],
-            "dates": dates
-        };
+	edit: async ({ locals, request, params }) => {
+		const formData = await request.formData();
+		const data = Object.fromEntries([...formData]);
+		const id = locals.pb.authStore.model.id;
 
-        const record = await pb.collection("animals").update(`${params.animal}`, pb_data);
+		const dates = Object.keys(data).filter((keys) => keys != 'name' && keys != 'description');
 
-        throw redirect(302, "/animals")
-    }
-}
+		const pb_data = {
+			name: data['name'],
+			owner: id,
+			description: data['description'],
+			dates: dates
+		};
+
+		const record = await pb.collection('animals').update(`${params.animal}`, pb_data);
+
+		throw redirect(302, '/animals');
+	}
+};

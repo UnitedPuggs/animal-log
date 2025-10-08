@@ -1,166 +1,128 @@
 <script>
-    import { onMount } from "svelte";
-    import { page } from "$app/stores";
-    import { pb } from "$lib/pocketbase.js";
-    let { data } = $props();
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
+	import { pb } from '$lib/pocketbase.js';
+	import * as Card from '$lib/components/ui/card/index.js';
 
-    let animals = $state([]);
-    let feedings = $state([]);
-    let upcomings = $state([]);
+	let { data } = $props();
 
-    const NOW = new Date();
+	let animals = $state([]);
+	let feedings = $state([]);
+	let upcomings = $state([]);
 
-    onMount(async() => {
-        const user = $page.data.user.id;
+	const NOW = new Date();
 
-        animals = await pb.collection("animals").getFullList({
-            filter: `owner="${user}"`
-        });
+	onMount(async () => {
+		const user = $page.data.user.id;
 
-        feedings = await pb.collection("feedings").getList(1, 10, {
-            filter: `animal.owner.id="${user}"`,
-            expand: 'animal.owner',
-            sort: '-created'
-        });
+		animals = await pb.collection('animals').getFullList({
+			filter: `owner="${user}"`
+		});
 
-        // GET UPCOMING DATES FOR ALL ANIMALS
-        let queue = [];
+		feedings = await pb.collection('feedings').getList(1, 10, {
+			filter: `animal.owner.id="${user}"`,
+			expand: 'animal.owner',
+			sort: '-created'
+		});
 
-        animals.forEach((animal) => {
-            queue.push(findUpcomingFeedings(animal.dates).then((dates) => {
-                return dates.map((date) => ({
-                    animal: animal.name,
-                    date: new Date(date)
-                }));
-            }))
-        });
+		// GET UPCOMING DATES FOR ALL ANIMALS
+		let queue = [];
 
-        const UPCOMING_FEEDS_ARR = await Promise.all(queue);
-        const UPCOMING_FEEDS = UPCOMING_FEEDS_ARR.flat();
+		animals.forEach((animal) => {
+			queue.push(
+				findUpcomingFeedings(animal.dates).then((dates) => {
+					return dates.map((date) => ({
+						animal: animal.name,
+						date: new Date(date)
+					}));
+				})
+			);
+		});
 
-        UPCOMING_FEEDS.sort((a, b) => a.date - b.date);
+		const UPCOMING_FEEDS_ARR = await Promise.all(queue);
+		const UPCOMING_FEEDS = UPCOMING_FEEDS_ARR.flat();
 
-        console.log(UPCOMING_FEEDS)
+		UPCOMING_FEEDS.sort((a, b) => a.date - b.date);
 
-        feedings = feedings.items;
-        upcomings = UPCOMING_FEEDS;
-    });
+		feedings = feedings.items;
+		upcomings = UPCOMING_FEEDS;
+	});
 
-    function dateDiff(startDate) {
-        const START_DATE = new Date(startDate);
-        const TIME_DIFF = Math.abs(NOW - START_DATE);
-        const DATE_DIFF = Math.ceil(TIME_DIFF / (1000 * 60 * 60 * 24));
-        return DATE_DIFF - 1;
-    }
+	function dateDiff(startDate) {
+		const START_DATE = new Date(startDate);
+		const TIME_DIFF = Math.abs(NOW - START_DATE);
+		const DATE_DIFF = Math.ceil(TIME_DIFF / (1000 * 60 * 60 * 24));
+		return DATE_DIFF - 1;
+	}
 
-    function convertDate(dateStr) {
-        const TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-        const DATE = new Date(dateStr);
-        const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: TZ })}`
-        return CONVERTED;
-    }
-    
-    async function findUpcomingFeedings(dates) {
-        const TODAY = new Date();
-        const CURR_DAY_IDX = TODAY.getDay();
+	function convertDate(dateStr) {
+		const TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+		const DATE = new Date(dateStr);
+		const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: TZ })}`;
+		return CONVERTED;
+	}
 
-        const DAY_IDX = {
-            'Sunday': 0,
-            'Monday': 1,
-            'Tuesday': 2,
-            'Wednesday': 3,
-            'Thursday': 4,
-            'Friday': 5,
-            'Saturday': 6
-        };
+	async function findUpcomingFeedings(dates) {
+		const TODAY = new Date();
+		const CURR_DAY_IDX = TODAY.getDay();
 
-        const TARGET_IDX = dates.map(day => DAY_IDX[day]);
+		const DAY_IDX = {
+			Sunday: 0,
+			Monday: 1,
+			Tuesday: 2,
+			Wednesday: 3,
+			Thursday: 4,
+			Friday: 5,
+			Saturday: 6
+		};
 
-        return  TARGET_IDX.map((target) => {
-            const DATE_DIFF = (target - CURR_DAY_IDX + 7) % 7 || 7;
-            let nextDate = new Date();
-            nextDate.setDate(TODAY.getDate() + DATE_DIFF);
-            return nextDate.toISOString();
-        });
-    }
+		const TARGET_IDX = dates.map((day) => DAY_IDX[day]);
+
+		return TARGET_IDX.map((target) => {
+			const DATE_DIFF = (target - CURR_DAY_IDX + 7) % 7 || 7;
+			let nextDate = new Date();
+			nextDate.setDate(TODAY.getDate() + DATE_DIFF);
+			return nextDate.toISOString();
+		});
+	}
 </script>
 
 <svelte:head>
-    <title>Your Animals</title>
+	<title>Your Animals</title>
 </svelte:head>
 
-<div class="flex lg:flex-row flex-col gap-2 justify-center items-center lg:items-start">
-    {#if animals.length > 0}
-        <div class="flex flex-col top-0">
-            <h3 class="font-bold text-2xl mt-8 text-center">Your Animals:</h3>
-            <p class="text-gray-400 text-sm text-center">Click on an animal to see their feedings!</p>
-            <section class="grid grid-cols-1 lg:grid-cols-4 gap-3 border-2 p-4 border-black rounded-xl shadow bg-pink-50">
-                {#each animals as animal}
-                    <a href="/animals/{animal.id}">
-                    <div 
-                    class="flex flex-col border-2 border-black
-                    bg-white box-shadow p-2 rounded-md 
-                    transition-all hover:scale-95 
-                    lg:w-52 w-60 h-fit">
-                        <span class="text-lg"><strong>{animal.name}</strong> the <strong>{animal.description}</strong></span>
-                        {#if animal.lastFed} <!-- Needs to also be able to account for feeding being today? -->
-                            <span class="text-gray-500">
-                                Last fed
-                                {#if dateDiff(convertDate(animal.lastFed)) == 0}
-                                    <strong>today</strong> 
-                                {:else}
-                                    <strong>{dateDiff(convertDate(animal.lastFed))} {dateDiff(convertDate(animal.lastFed)) > 1 ? "days" : "day"}</strong> ago
-                                {/if}
-                            </span>
-                        {/if}
-                        <span class="text-sm text-gray-400 my-1">Feed Days</span>
-                        <hr class="mb-2"/>
-                        <section class="flex gap-1 flex-wrap">
-                            {#each animal.dates as date}
-                                <span class="text-sm text-white bg-gray-500 w-fit px-2 py-1 rounded-full">{date}</span>
-                            {/each}
-                        </section>
-                    </div>
-                    </a>
-                {/each}
-            </section>
-        </div>
-        <div class="flex flex-col">
-            <h3 class="font-bold text-2xl mt-8 text-center">Upcoming Feedings:</h3>
-            <p class="text-gray-400 text-sm text-center">Soon-to-be feedings</p>
-            <section class="flex flex-col gap-2 border-2 p-4 border-black rounded-xl shadow bg-pink-50 max-h-48 overflow-y-auto">
-                {#each upcomings as upcoming}
-                    <a
-                    href="/animals/add-food?animal={upcoming.animal}&date={upcoming.date.getFullYear()}-{upcoming.date.getMonth() + 1}-{upcoming.date.getDate()}"
-                    class="border-2 border-black bg-white p-2 rounded-md transition-all hover:scale-95"
-                    >
-                        Upcoming feeding for <strong>{upcoming.animal}</strong> on <strong>{upcoming.date.toLocaleDateString('en-US')}</strong>
-                    </a>
-                {/each}
-            </section>
-        </div>
-    {:else}
-        <div class="flex flex-col justify-center items-center gap-1">
-            <h5 class="font-bold text-2xl">NO ANIMALS TO SHOW</h5>
-            <p class="text-sm text-gray-400">Get started below 😊</p>
-            <a href="/animals/add-animal" class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95">Add Animal</a>
-        </div>
-    {/if}
-    {#if feedings.length > 0}
-        <div class="flex flex-col top-0">
-            <h3 class="font-bold text-2xl mt-8 text-center max-h-32 overflow-y-auto">Recent Feedings:</h3>
-            <p class="text-gray-400 text-sm text-center">Here are your latest feedings</p>
-            <section class="grid grid-cols-1 gap-3 border-2 p-4 border-black rounded-xl shadow bg-pink-50">
-                {#each feedings as feeding}
-                    <div 
-                    class="flex flex-col border-2 border-black
-                    bg-white box-shadow p-2 rounded-md 
-                    lg:w-56 w-60 h-fit"
-                    >
-                    <span class="text-center">{feeding.expand.animal.name} fed on {convertDate(feeding.fed)}</span>
-                    </div>
-                {/each}
-            </section>
-        </div>
-    {/if}
+<div class="flex flex-col gap-2">
+	<h1 class="font-semibold text-3xl">Good day, {$page.data.user.name.split(' ')[0]}! 🌞</h1>
+	{#if upcomings.length > 0}
+		<!-- this is wrong because we don't do distinct per animal -->
+		<span class="text-gray-500"><em>{upcomings.length} animals need feeding today.</em></span>
+	{/if}
+	{#if animals.length > 0}
+		<div class="flex flex-col gap-2">
+			{#each animals as animal}
+				<div
+					class="flex flex-col border-2 border-black bg-white shadow p-2 rounded-md transition-all hover:scale-95 h-fit"
+				>
+					<a href="/animals/{animal.id}">
+						<p class="text-lg font-semibold">{animal.name} the {animal.description}</p>
+						<span class="text-sm text-gray-400 my-1">Feed Days</span>
+						<hr class="mb-2" />
+						<section class="flex gap-1 flex-wrap">
+							{#each animal.dates as date}
+								<span class="text-sm text-white bg-sky-400 w-fit px-2 py-1 rounded-full"
+									>{date}</span
+								>
+							{/each}
+						</section>
+					</a>
+					<a
+						href="/animals/add-food?animal={animal.name}"
+						class="flex w-full mx-auto items-center justify-center pt-4"
+					>
+						<span class="rounded-full border-2 border-black px-2 py-1 font-semibold">Feed Now</span>
+					</a>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>

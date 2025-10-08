@@ -1,24 +1,24 @@
 import { pb } from '$lib/pocketbase';
 
 export async function GET({ url, locals }) {
-    const user = locals.pb.authStore.model.id;
-    const animal = url.searchParams.get("animal");
-    const record = await pb.collection('animals').getFirstListItem(`owner="${user}"`, {
-        filter: `name~"${animal}"`
-    });
+	const user = locals.pb.authStore.model.id;
+	const animal = url.searchParams.get('animal');
+	const record = await pb.collection('animals').getFirstListItem(`owner="${user}"`, {
+		filter: `name~"${animal}"`
+	});
 
-    // All this shit just to get the animal id smh
-    const animalId = record.id;
-    const now = new Date();
-    
-    const data = {
-        "food": "Food",
-        "animal": animalId,
-        "fed": now
-    };
+	// All this shit just to get the animal id smh
+	const animalId = record.id;
+	const now = new Date();
 
-    const feedRecord = await pb.collection("feedings").create(data);
-    console.log(feedRecord);
+	const data = {
+		food: 'Food',
+		animal: animalId,
+		fed: now
+	};
 
-    return new Response(null, { status: 204 });
+	const feedRecord = await pb.collection('feedings').create(data);
+	console.log(feedRecord);
+
+	return new Response(null, { status: 204 });
 }
