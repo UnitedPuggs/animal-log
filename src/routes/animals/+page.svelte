@@ -3,14 +3,13 @@
 	import { page } from '$app/stores';
 	import { pb } from '$lib/pocketbase.js';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import { getDayOfWeek, timeSince } from '$lib/dates.js';
 
 	let { data } = $props();
 
 	let animals = $state([]);
 	let feedings = $state([]);
-	let upcomings = $state([]);
-
-	const NOW = new Date();
+	let upcoming = $state(0);
 
 	onMount(async () => {
 		const user = $page.data.user.id;
@@ -25,66 +24,13 @@
 			sort: '-created'
 		});
 
-		// GET UPCOMING DATES FOR ALL ANIMALS
-		let queue = [];
-
-		animals.forEach((animal) => {
-			queue.push(
-				findUpcomingFeedings(animal.dates).then((dates) => {
-					return dates.map((date) => ({
-						animal: animal.name,
-						date: new Date(date)
-					}));
-				})
-			);
+		const needsFeedToday = await pb.collection('animals').getFullList({
+			filter: `dates~"${getDayOfWeek(new Date())}"`
 		});
-
-		const UPCOMING_FEEDS_ARR = await Promise.all(queue);
-		const UPCOMING_FEEDS = UPCOMING_FEEDS_ARR.flat();
-
-		UPCOMING_FEEDS.sort((a, b) => a.date - b.date);
 
 		feedings = feedings.items;
-		upcomings = UPCOMING_FEEDS;
+		upcoming = needsFeedToday.length;
 	});
-
-	function dateDiff(startDate) {
-		const START_DATE = new Date(startDate);
-		const TIME_DIFF = Math.abs(NOW - START_DATE);
-		const DATE_DIFF = Math.ceil(TIME_DIFF / (1000 * 60 * 60 * 24));
-		return DATE_DIFF - 1;
-	}
-
-	function convertDate(dateStr) {
-		const TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-		const DATE = new Date(dateStr);
-		const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: TZ })}`;
-		return CONVERTED;
-	}
-
-	async function findUpcomingFeedings(dates) {
-		const TODAY = new Date();
-		const CURR_DAY_IDX = TODAY.getDay();
-
-		const DAY_IDX = {
-			Sunday: 0,
-			Monday: 1,
-			Tuesday: 2,
-			Wednesday: 3,
-			Thursday: 4,
-			Friday: 5,
-			Saturday: 6
-		};
-
-		const TARGET_IDX = dates.map((day) => DAY_IDX[day]);
-
-		return TARGET_IDX.map((target) => {
-			const DATE_DIFF = (target - CURR_DAY_IDX + 7) % 7 || 7;
-			let nextDate = new Date();
-			nextDate.setDate(TODAY.getDate() + DATE_DIFF);
-			return nextDate.toISOString();
-		});
-	}
 </script>
 
 <svelte:head>
@@ -93,9 +39,11 @@
 
 <div class="flex flex-col gap-2">
 	<h1 class="font-semibold text-3xl">Good day, {$page.data.user.name.split(' ')[0]}! 🌞</h1>
-	{#if upcomings.length > 0}
+	{#if upcoming > 0}
 		<!-- this is wrong because we don't do distinct per animal -->
-		<span class="text-gray-500"><em>{upcomings.length} animals need feeding today.</em></span>
+		<span class="text-gray-500"
+			><em>{upcoming} {upcoming > 1 ? 'animals need' : 'animal needs'} feeding today.</em></span
+		>
 	{/if}
 	{#if animals.length > 0}
 		<div class="flex flex-col gap-2">
@@ -103,14 +51,16 @@
 				<div
 					class="flex flex-col border-2 border-black bg-white shadow p-2 rounded-md transition-all hover:scale-95 h-fit"
 				>
-					<a href="/animals/{animal.id}">
+					<a href="/animals/{animal.id}" class="flex flex-col">
 						<p class="text-lg font-semibold">{animal.name} the {animal.description}</p>
+						<span>Last fed {timeSince(new Date(animal.lastFed))}</span>
 						<span class="text-sm text-gray-400 my-1">Feed Days</span>
 						<hr class="mb-2" />
 						<section class="flex gap-1 flex-wrap">
 							{#each animal.dates as date}
-								<span class="text-sm text-white bg-sky-400 w-fit px-2 py-1 rounded-full"
-									>{date}</span
+								<span
+									class="text-sm font-semibold text-white bg-sky-500 w-fit px-2 py-1 rounded-full"
+									>{date.substring(0, 3)}</span
 								>
 							{/each}
 						</section>

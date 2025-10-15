@@ -15,7 +15,7 @@
 	}
 </script>
 
-<nav class="px-1 py-4 bg-green-100 border-t border-gray-400">
+<nav class="px-1 py-4 bg-green-100 border-t border-gray-400 sticky bottom-0">
 	<div class="flex justify-evenly py-2 px-1 font-semibold">
 		{#if $page.data?.user}
 			<a href="/">Home</a>
