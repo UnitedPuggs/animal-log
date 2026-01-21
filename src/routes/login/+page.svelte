@@ -6,9 +6,6 @@
 <svelte:head>
 	<title>Animal Log</title>
 </svelte:head>
-<!--
-    Maybe turn this into a login page if users aren't already logged in?
--->
 <div class="flex flex-col justify-center items-center">
 	<hgroup class="text-center">
 		<h1 class="text-2xl">Welcome to Animal Log!</h1>
@@ -47,7 +44,6 @@
 					name="username"
 					class="rounded-md shadow border border-black p-1"
 					placeholder="Your username here"
-					readonly
 				/>
 				<label for="password">Password</label>
 				<input
@@ -55,7 +51,6 @@
 					name="password"
 					class="rounded-md shadow border border-black p-1"
 					placeholder="Your password here"
-					readonly
 				/>
 			</div>
 		</form>

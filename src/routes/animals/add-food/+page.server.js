@@ -14,18 +14,18 @@ export const actions = {
 	add: async ({ locals, request }) => {
 		const formData = await request.formData();
 		const data = Object.fromEntries([...formData]);
-		const DATE = data.fed ? new Date(data.fed) : new Date();
+		const date = data.fed ? new Date(data.fed) : new Date();
 
 		const feed_data = {
 			food: data.food,
 			animal: data.animal,
-			fed: DATE
+			fed: date
 		};
 
 		const record = await pb.collection('feedings').create(feed_data);
 
 		const extdata = {
-			lastFed: DATE
+			lastFed: date
 		};
 
 		const feed = await pb.collection('animals').update(`${data.animal}`, extdata);

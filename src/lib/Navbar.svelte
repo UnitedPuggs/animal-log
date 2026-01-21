@@ -16,13 +16,14 @@
 </script>
 
 <nav class="px-1 py-4 bg-green-100 border-t border-gray-400 sticky bottom-0">
-	<div class="flex justify-evenly py-2 px-1 font-semibold">
+	<div class="flex justify-evenly py-2 px-1 font-semibold text-center">
 		{#if $page.data?.user}
-			<a href="/">Home</a>
-			<a href="/animals/add-animal">Animals</a>
-			<a href="/animals/add-food">Log</a>
-			<a href="/animals/inventory">Inventory</a>
-			<button onclick={copyLink}>Share</button>
+			<a href="/" class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all">Home</a>
+			<a href="/animals/add-animal" class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all">Animals</a>
+			<a href="/animals/add-food" class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all">Feed</a>
+			<a href="/animals/add-food/scan" class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all">Scan</a>
+			<!--<a href="/animals/inventory">Inventory</a>-->
+			<!--<button onclick={copyLink}>Share</button>-->
 		{/if}
 	</div>
 </nav>

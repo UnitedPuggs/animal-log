@@ -59,7 +59,7 @@
 						<section class="flex gap-1 flex-wrap">
 							{#each animal.dates as date}
 								<span
-									class="text-sm font-semibold text-white bg-sky-500 w-fit px-2 py-1 rounded-full"
+									class="text-sm font-semibold text-white bg-sky-500 w-12 px-2 py-1 rounded-full text-center"
 									>{date.substring(0, 3)}</span
 								>
 							{/each}

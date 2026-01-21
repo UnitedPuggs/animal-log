@@ -1,15 +1,16 @@
 import { redirect } from '@sveltejs/kit';
 import { REDIRECT_URL } from '$env/static/private';
+import { pb } from '$lib/pocketbase.js';
 
 export const load = async ({ locals, url }) => {
 	if (locals.pb.authStore.model) {
 		return redirect(303, '/animals');
 	}
 
-	const authMethods = await locals.pb.collection('users').listAuthMethods();
+	const authMethods = await pb.collection('users').listAuthMethods();
 	const fail = url.searchParams.get('fail') === 'true';
 
-	return { providers: authMethods.authProviders, fail };
+	return { providers: authMethods.oauth2.providers, fail };
 };
 
 export const actions = {
@@ -30,7 +31,7 @@ export const actions = {
 		throw redirect(303, '/animals');
 	},
 	google: async ({ locals, cookies }) => {
-		const provider = (await locals.pb.collection('users').listAuthMethods()).authProviders.find(
+		const provider = (await locals.pb.collection('users').listAuthMethods()).oauth2.providers.find(
 			(p) => p.name === 'google'
 		);
 		cookies.set('provider', JSON.stringify(provider), {
