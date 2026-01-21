@@ -1,6 +1,7 @@
 <script>
     import { Html5Qrcode } from 'html5-qrcode';
     import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
 
     let scanning = $state(false);
     let decodeTextTest = $state("");
@@ -35,10 +36,8 @@
         scanning = false;
     }
     function onScanSuccess(decodedText, decodedResult) {
-        alert(`Code matched = ${decodedText}`)
-        decodeTextTest = decodedText;
-        console.log(decodedResult)
-        decodeTextResultTest = decodedResult;
+        alert(`Code matched = ${decodedText}`);
+        goto(decodedText);
     }
     function onScanFailure(error) {
         console.warn(`Code scan error = ${error}`)
