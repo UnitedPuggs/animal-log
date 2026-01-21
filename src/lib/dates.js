@@ -1,8 +1,15 @@
-export function convertDate(dateStr) {
-	const TZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-	const DATE = new Date(dateStr);
-	const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: TZ })}`;
-	return CONVERTED;
+export function toDateTimeLocal(value = new Date()) {
+  const d = new Date(value);
+
+  const pad = n => String(n).padStart(2, '0');
+
+  return (
+    d.getFullYear() + '-' +
+    pad(d.getMonth() + 1) + '-' +
+    pad(d.getDate()) + 'T' +
+    pad(d.getHours()) + ':' +
+    pad(d.getMinutes())
+  );
 }
 
 export const DAYS_OF_WEEK = [

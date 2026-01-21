@@ -14,9 +14,8 @@
 <Navbar />
 -->
 <div class="flex flex-col min-h-screen text-black">
-	<main class="flex-grow p-4">
+	<main class="p-4">
 		{@render children?.()}
 	</main>
-
 	<Navbar />
 </div>

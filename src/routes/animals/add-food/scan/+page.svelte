@@ -1,54 +1,37 @@
 <script>
-    import { Html5Qrcode } from 'html5-qrcode';
-    import { onMount } from 'svelte';
-    import { goto } from '$app/navigation';
+	import { Html5Qrcode } from 'html5-qrcode';
+	import { onDestroy, onMount } from 'svelte';
+	import { goto } from '$app/navigation';
 
-    let scanning = $state(false);
-    let decodeTextTest = $state("");
-    let decodeTextResultTest = $state("");
-    let html5QRcode;
+	let html5QRcode;
 
-    onMount(() => {
-        html5QRcode = new Html5Qrcode('reader');
-        html5QRcode.start(
-            {
-                facingMode: 'environment'
-            },
-            {
-                fps: 10,
-                qrbox: { width: 250, height: 250 },
-            },
-            onScanSuccess,
-            onScanFailure
-        );
-    });
+	onMount(() => {
+		html5QRcode = new Html5Qrcode('reader');
+		html5QRcode.start(
+			{
+				facingMode: 'environment'
+			},
+			{
+				fps: 10,
+				qrbox: { width: 250, height: 250 }
+			},
+			onScanSuccess,
+			onScanFailure
+		);
+	});
 
-    function stopScanning() {
-        html5QRcode.stop();
-        scanning = false;
-    }
-    async function onScanSuccess(decodedText, decodedResult) {
-        stopScanning();
-        goto(decodedText);
-    }
-    function onScanFailure(error) {
-        console.warn(`Code scan error = ${error}`)
-    }
+	onDestroy(() => {
+		html5QRcode.stop();
+	});
+
+	function onScanSuccess(decodedText, decodedResult) {
+		html5QRcode.stop();
+		goto(decodedText);
+	}
+	function onScanFailure(error) {
+		console.warn(`Error with scanner: ${error}`);
+	}
 </script>
-<style>
-    div {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 20px;
-    }
-    reader {
-        width: 100%;
-        min-height: 500px;
-        background-color: black;
-    }
-</style>
-<div>
-    <reader id="reader"></reader>
+<div class="flex flex-col items-center justify-center gap-5">
+	<reader id="reader" class="w-full min-h-96 bg-black"></reader>
 </div>

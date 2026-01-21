@@ -1,8 +1,9 @@
 <script>
 	let { data } = $props();
+	import { toDateTimeLocal } from '$lib/dates.js';
 
 	let selected = $state();
-	let date = $state(new Date(data.date).toISOString().slice(0, 10) + ' 00:00:00');
+	let date = $derived(toDateTimeLocal(data.date));
 </script>
 
 <svelte:head>
