@@ -3,6 +3,8 @@
     import { onMount } from 'svelte';
 
     let scanning = $state(false);
+    let decodeTextTest = $state("");
+    let decodeTextResultTest = $state("");
     let html5QRcode;
 
     onMount(() => {
@@ -34,14 +36,31 @@
     }
     function onScanSuccess(decodedText, decodedResult) {
         alert(`Code matched = ${decodedText}`)
+        decodeTextTest = decodedText;
         console.log(decodedResult)
+        decodeTextResultTest = decodedResult;
     }
     function onScanFailure(error) {
         console.warn(`Code scan error = ${error}`)
     }
 </script>
+<style>
+    div {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 20px;
+    }
+    reader {
+        width: 100%;
+        min-height: 500px;
+        background-color: black;
+    }
+</style>
 <div>
     <reader id="reader"></reader>
+    <span>{decodeTextTest} and result {decodeTextResultTest}</span>
     {#if scanning}
         <button onclick={stopScanning}>Stop</button>
     {:else}
