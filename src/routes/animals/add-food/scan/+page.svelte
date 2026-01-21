@@ -9,14 +9,7 @@
     let html5QRcode;
 
     onMount(() => {
-        init();
-    });
-
-    function init() {
         html5QRcode = new Html5Qrcode('reader');
-    }
-
-    function startScan() {
         html5QRcode.start(
             {
                 facingMode: 'environment'
@@ -28,15 +21,14 @@
             onScanSuccess,
             onScanFailure
         );
-        scanning = true;
-    }
+    });
 
-    async function stopScanning() {
-        await html5QRcode.stop();
+    function stopScanning() {
+        html5QRcode.stop();
         scanning = false;
     }
-    function onScanSuccess(decodedText, decodedResult) {
-        alert(`Code matched = ${decodedText}`);
+    async function onScanSuccess(decodedText, decodedResult) {
+        stopScanning();
         goto(decodedText);
     }
     function onScanFailure(error) {
@@ -59,10 +51,4 @@
 </style>
 <div>
     <reader id="reader"></reader>
-    <span>{decodeTextTest} and result {decodeTextResultTest}</span>
-    {#if scanning}
-        <button onclick={stopScanning}>Stop</button>
-    {:else}
-        <button onclick={startScan}>Scan</button>
-    {/if}
 </div>
