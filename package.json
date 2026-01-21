@@ -34,11 +34,6 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@capacitor/android": "^8.0.1",
-		"@capacitor/cli": "^8.0.1",
-		"@capacitor/core": "^8.0.1",
-		"@capacitor/ios": "^8.0.1",
-		"@capacitor/local-notifications": "^8.0.0",
 		"@internationalized/date": "^3.10.1",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@tailwindcss/vite": "^4.1.18",
