@@ -61,7 +61,7 @@
 			<DateSelector loading={formLoading} selectedDays={feedDays} />
 			<button
 				class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95"
-				disabled={formLoading}>Update Animal</button
+				disabled={formLoading}>Update {animal}</button
 			>
 		</form>
 	</section>

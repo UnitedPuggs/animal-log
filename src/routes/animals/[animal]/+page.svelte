@@ -8,7 +8,7 @@
 	function convertDate(dateStr) {
 		const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 		const DATE = new Date(dateStr);
-		const CONVERTED = `${DATE.toLocaleDateString('en-US', { timeZone: tz })} @ ${DATE.toLocaleTimeString('en-US', { timeZone: tz, minute: '2-digit', hour: '2-digit' })}`;
+		const CONVERTED = DATE.toLocaleDateString('en-US', { timeZone: tz });
 		return CONVERTED;
 	}
 
@@ -61,18 +61,24 @@
 		</div>
 	</dialog>
 	<!-------------------------------->
-	<section class="flex justify-center gap-2 my-2">
+	<section class="flex justify-center gap-1 my-2">
+		<a
+			href="{$page.params.animal}/add-food?animal={data.name}"
+			class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95 w-20 text-center"
+		>
+			Feed
+		</a>
 		<a
 			href="{$page.params.animal}/edit"
-			class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95"
+			class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95 w-20 text-center"
 		>
-			edit animal
+			Edit
 		</a>
 		<button
-			class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95"
+			class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95 w-20 text-center"
 			onclick={openRemove}
 		>
-			remove animal
+			Remove
 		</button>
 	</section>
 	{#await data.feedings}
@@ -84,16 +90,16 @@
 			>
 				<h3 class="font-bold text-2xl text-center pb-2">{data.name}'s Feedings</h3>
 				<hr class="border-black pb-2" />
-				<section class="flex flex-row flex-wrap gap-1">
+				<section class="flex flex-col gap-1">
 					{#each feedings as food}
 						<div
-							class="flex gap-1 border border-black rounded-lg px-2 py-1 font-semibold lg:w-72 h-14 lg:h-auto"
+							class="flex gap-1 justify-between border border-black rounded-lg px-2 py-1 font-semibold lg:w-72 h-14 lg:h-auto"
 						>
 							<section>
 								<span>{food.food} fed on {convertDate(food.fed)}</span>
 							</section>
 							<section class="flex border-l border-black">
-								<button onclick={() => removeFeeding(food.id)} class="px-1">🚫</button>
+								<button onclick={() => removeFeeding(food.id)} class="px-1 text-lg">🗑️</button>
 							</section>
 						</div>
 					{/each}

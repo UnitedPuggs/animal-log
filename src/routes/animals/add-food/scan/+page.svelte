@@ -21,17 +21,25 @@
 	});
 
 	onDestroy(() => {
-		html5QRcode.stop();
+		if (html5QRcode) {
+			html5QRcode.stop().catch(err => {
+				console.warn('Error stopping scanner:', err);
+			});
+		}
 	});
 
 	function onScanSuccess(decodedText, decodedResult) {
-		html5QRcode.stop();
-		goto(decodedText);
+		html5QRcode.stop().then(() => {
+			goto(decodedText);
+		}).catch(err => {
+			console.warn('Error stopping scanner:', err);
+		});
 	}
 	function onScanFailure(error) {
 		console.warn(`Error with scanner: ${error}`);
 	}
 </script>
+
 <div class="flex flex-col items-center justify-center gap-5">
-	<reader id="reader" class="w-full min-h-96 bg-black"></reader>
+	<div id="reader" class="w-full min-h-96 bg-black"></div>
 </div>

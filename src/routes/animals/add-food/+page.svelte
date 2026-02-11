@@ -52,7 +52,7 @@
 				value={date}
 			/>
 			<button
-				class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95"
+				class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 mt-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95"
 				>Add Food</button
 			>
 		</form>

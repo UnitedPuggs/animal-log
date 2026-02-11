@@ -8,8 +8,27 @@
 	let { data } = $props();
 
 	let animals = $state([]);
+	let tasks = $state([]);
 	let feedings = $state([]);
 	let upcoming = $state(0);
+
+	async function getLastFeed(animal) {
+		const record = await pb.collection('feedings').getFirstListItem(`animal='${animal}'`, {
+			sort: '-fed'
+		});
+		console.log(record);
+		return record;
+	}
+
+	async function repeatLastFeed(animal) {
+		const lastFeed = await getLastFeed(animal)
+		const data = {
+			"food": lastFeed.food,
+			"animal": animal,
+			"fed": new Date(),
+		}
+		const record = await pb.collection('feedings').create(data);
+	}
 
 	onMount(async () => {
 		const user = $page.data.user.id;
@@ -47,32 +66,46 @@
 	{/if}
 	{#if animals.length > 0}
 		<div class="flex flex-col gap-2">
+			<h2 class="text-xl font-bold">Animals</h2>
 			{#each animals as animal}
 				<div
-					class="flex flex-col border-2 border-black bg-white shadow p-2 rounded-md transition-all hover:scale-95 h-fit"
+					class="flex flex-col gap-1 border-2 border-black bg-white shadow p-2 rounded-md transition-all hover:scale-95 h-fit"
 				>
 					<a href="/animals/{animal.id}" class="flex flex-col">
 						<p class="text-lg font-semibold">{animal.name} the {animal.description}</p>
-						<span>Last fed {timeSince(new Date(animal.lastFed))}</span>
-						<span class="text-sm text-gray-400 my-1">Feed Days</span>
+						{#await getLastFeed(animal.id)}
+							<span>Loading last feed...</span>
+						{:then lastFeed}
+							<span>Last fed <u>{lastFeed.food.toLowerCase()}</u> {timeSince(new Date(animal.lastFed))}</span>
+						{/await}
+						<span class="text-sm text-gray-500 my-1">Feed Days</span>
 						<hr class="mb-2" />
 						<section class="flex gap-1 flex-wrap">
 							{#each animal.dates as date}
 								<span
-									class="text-sm font-semibold text-white bg-sky-500 w-12 px-2 py-1 rounded-full text-center"
-									>{date.substring(0, 3)}</span
+									class="text-sm font-semibold px-2 py-1 rounded-md bg-blue-300 shadow w-12 text-center
+								{getDayOfWeek(new Date()).substring(0, 3) == date.substring(0, 3)
+										? 'border-2 border-rose-500 scale-110'
+										: ''}"
 								>
+									{date.substring(0, 3)}
+								</span>
 							{/each}
 						</section>
 					</a>
-					<a
-						href="/animals/add-food?animal={animal.name}"
-						class="flex w-full mx-auto items-center justify-center pt-4"
-					>
-						<span class="rounded-full border-2 border-black px-2 py-1 font-semibold">Feed Now</span>
-					</a>
+					<div class="flex flex-row w-full justify-center gap-2 mt-2">
+						<a href="/animals/add-food?animal={animal.name}">
+							<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold">Add Feed +</button>
+						</a>
+						<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold" onclick={async () => repeatLastFeed(animal.id) }>Repeat Last ↻</button>
+					</div>
 				</div>
 			{/each}
 		</div>
 	{/if}
+	<!--
+	<div>
+		<h2 class="text-xl font-bold">Tasks</h2>
+	</div>
+	-->
 </div>

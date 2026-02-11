@@ -25,8 +25,8 @@
             {day == 'Sunday' ? 'rounded-l-lg' : 'rounded-none'} 
             {day == 'Saturday' ? 'rounded-r-lg' : 'rounded-none'} 
             {checkedDays[days.indexOf(day)]
-					? 'bg-sky-900'
-					: 'bg-sky-400'} text-white cursor-pointer transition-all duration-200"
+					? 'bg-blue-900'
+					: 'bg-blue-400'} text-white cursor-pointer transition-all duration-200"
 				onclick={() => {
 					if (!loading) checkedDays[days.indexOf(day)] = !checkedDays[days.indexOf(day)];
 				}}
