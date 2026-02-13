@@ -16,21 +16,14 @@ export const actions = {
 		const data = Object.fromEntries([...formData]);
 		const date = data.fed ? new Date(data.fed) : new Date();
 
-		console.log(date)
-
 		const feed_data = {
 			food: data.food,
 			animal: data.animal,
 			fed: date
 		};
 
-		const record = await pb.collection('feedings').create(feed_data);
-
-		const extdata = {
-			lastFed: date
-		};
-
-		const feed = await pb.collection('animals').update(`${data.animal}`, extdata);
+		const addFeed = await pb.collection('feedings').create(feed_data);
+		const updateLastFed = await pb.collection('animals').update(`${data.animal}`, {lastFed: date});
 
 		throw redirect(302, '/animals');
 	}

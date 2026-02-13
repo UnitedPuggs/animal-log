@@ -21,7 +21,19 @@
 	}
 
 	async function removeFeeding(id) {
+		const lastFedRecord = await pb.collection('feedings').getFirstListItem(`animal='${$page.params.animal}'`, {
+			sort: '-fed'			
+		});
 		await pb.collection('feedings').delete(`${id}`);
+
+		// if the record is NOT the latest then we don't care
+		if (lastFedRecord.id === id) {
+			const newLastFed = await pb.collection('feedings').getFirstListItem(`animal='${$page.params.animal}'`, {
+			sort: '-fed'			
+			});
+			const updateFed = await pb.collection('animals').update(`${$page.params.animal}`, {lastFed: newLastFed.fed})
+		}
+
 		invalidateAll();
 	}
 
@@ -32,12 +44,12 @@
 </script>
 
 <svelte:head>
-	<title>{data.name}'s page!</title>
+	<title>{data.name}'s Info</title>
 </svelte:head>
 
 <div class="flex flex-col justify-center items-center">
 	<!--- MODAL FOR REMOVING ANIMAL -->
-	<dialog id="delete-animal" class="rounded-xl">
+	<dialog id="delete-animal" class="rounded-xl m-auto">
 		<div class="flex flex-col p-6">
 			<span class="text-xl font-bold">Are you absolutely sure?</span>
 			<p class="text-gray-400 w-72 lg:w-96">

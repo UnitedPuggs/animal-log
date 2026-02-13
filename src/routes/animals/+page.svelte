@@ -4,6 +4,7 @@
 	import { pb } from '$lib/pocketbase.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { getDayOfWeek, timeSince } from '$lib/dates.js';
+	import { invalidateAll } from '$app/navigation';
 
 	let { data } = $props();
 
@@ -13,21 +14,23 @@
 	let upcoming = $state(0);
 	let lastFeeds = $state({});
 
-	async function getLastFeed(animal) {
-		const record = await pb.collection('feedings').getFirstListItem(`animal='${animal}'`, {
+	async function getLastFeed(id) {
+		const record = await pb.collection('feedings').getFirstListItem(`animal='${id}'`, {
 			sort: '-fed'
 		});
 		return record;
 	}
 
-	async function repeatLastFeed(animal) {
-		const lastFeed = await getLastFeed(animal)
+	async function repeatLastFeed(id) {
+		const lastFeed = await getLastFeed(id)
 		const data = {
 			"food": lastFeed.food,
-			"animal": animal,
+			"animal": id,
 			"fed": new Date(),
 		}
-		const record = await pb.collection('feedings').create(data);
+
+		const addFeed = await pb.collection('feedings').create(data);
+		const updateLastFed = await pb.collection('animals').update(`${id}`, {lastFed: new Date()})
 	}
 
 	onMount(async () => {
@@ -39,7 +42,7 @@
 
 		feedings = await pb.collection('feedings').getFullList({
 			filter: `animal.owner.id="${user}"`,
-			expand: 'animal.owner',
+			sort: 'fed'
 		});
 
 		// Not the best way to do this. Possible improvement --> create view of unique animals of last food
@@ -73,7 +76,7 @@
 			<h2 class="text-xl font-bold">Animals</h2>
 			{#each animals as animal}
 				<div
-					class="flex flex-col gap-1 border-2 border-black bg-white shadow p-2 rounded-md transition-all hover:scale-95 h-fit"
+					class="flex flex-col gap-1 border-2 border-black bg-white shadow p-2 rounded-md transition-all h-fit"
 				>
 					<a href="/animals/{animal.id}" class="flex flex-col">
 						<p class="text-lg font-semibold">{animal.name} the {animal.description}</p>
@@ -98,7 +101,7 @@
 							<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold">Add Feed +</button>
 						</a>
 						{#if lastFeeds[animal.id]?.length > 0}
-							<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold" onclick={async () => repeatLastFeed(animal.id) }>Repeat Last ↻</button>
+							<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold transition-all active:scale-90" onclick={async () => repeatLastFeed(animal.id) }>Repeat Last ↻</button>
 						{/if}
 					</div>
 				</div>
