@@ -13,11 +13,14 @@
 	let upcoming = $state(0);
 	let lastFeeds = $state({});
 
-	async function getLastFeed(animal) {
-		const record = await pb.collection('feedings').getFirstListItem(`animal='${animal}'`, {
-			sort: '-fed'
-		});
-		return record;
+	async function repeatLastFeed(animal) {
+		const lastFeed = await getLastFeed(animal)
+		const data = {
+			"food": lastFeed.food,
+			"animal": animal,
+			"fed": new Date(),
+		}
+		const record = await pb.collection('feedings').create(data);
 	}
 
 	onMount(async () => {
