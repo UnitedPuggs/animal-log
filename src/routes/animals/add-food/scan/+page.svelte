@@ -4,39 +4,63 @@
 	import { goto } from '$app/navigation';
 
 	let html5QRcode;
+	let isScanning = false;
+	let isInitialized = false;
 
-	onMount(() => {
-		html5QRcode = new Html5Qrcode('reader');
-		html5QRcode.start(
-			{
-				facingMode: 'environment'
-			},
-			{
-				fps: 10,
-				qrbox: { width: 250, height: 250 }
-			},
-			onScanSuccess,
-			onScanFailure
-		);
-	});
-
-	onDestroy(() => {
-		if (html5QRcode) {
-			html5QRcode.stop().catch(err => {
-				console.warn('Error stopping scanner:', err);
-			});
+	onMount(async () => {
+		try {
+			html5QRcode = new Html5Qrcode('reader');
+			await html5QRcode.start(
+				{
+					facingMode: 'environment'
+				},
+				{
+					fps: 10,
+					qrbox: { width: 250, height: 250 }
+				},
+				onScanSuccess,
+				onScanFailure
+			);
+			isInitialized = true;
+		} catch (err) {
+			console.error('Failed to start scanner:', err);
 		}
 	});
 
-	function onScanSuccess(decodedText, decodedResult) {
-		html5QRcode.stop().then(() => {
+	onDestroy(async () => {
+		if (html5QRcode && isInitialized) {
+			try {
+				if (html5QRcode.isScanning) {
+					await html5QRcode.stop();
+				}
+				await html5QRcode.clear();
+			} catch (err) {
+				console.warn('Error cleaning up scanner:', err);
+			}
+		}
+	});
+
+	async function onScanSuccess(decodedText, decodedResult) {
+		if (isScanning) return;
+		isScanning = true;
+
+		try {
+			if (html5QRcode.isScanning) {
+				await html5QRcode.stop();
+			}
+			await html5QRcode.clear();
 			goto(decodedText);
-		}).catch(err => {
-			console.warn('Error stopping scanner:', err);
-		});
+		} catch (err) {
+			console.error('Error during navigation:', err);
+			isScanning = false;
+		}
 	}
+
 	function onScanFailure(error) {
-		console.warn(`Error with scanner: ${error}`);
+		const ignoredErrors = ['NotFoundException', 'IndexSizeError'];
+		if (!ignoredErrors.some(err => error.includes(err))) {
+			console.warn(`Scanner error: ${error}`);
+		}
 	}
 </script>
 

@@ -63,7 +63,7 @@
 	<!-------------------------------->
 	<section class="flex justify-center gap-1 my-2">
 		<a
-			href="{$page.params.animal}/add-food?animal={data.name}"
+			href="add-food?animal={data.name}"
 			class="border-2 border-black rounded-lg p-2 font-bold bg-white transition-all duration-200 hover:scale-95 w-20 text-center"
 		>
 			Feed
