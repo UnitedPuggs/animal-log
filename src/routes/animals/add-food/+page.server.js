@@ -16,6 +16,8 @@ export const actions = {
 		const data = Object.fromEntries([...formData]);
 		const date = data.fed ? new Date(data.fed) : new Date();
 
+		console.log(date)
+
 		const feed_data = {
 			food: data.food,
 			animal: data.animal,

@@ -4,6 +4,7 @@
 
 	let selected = $state();
 	let date = $derived(toDateTimeLocal(data.date));
+	let isoDate = $derived(new Date(date).toISOString());
 </script>
 
 <svelte:head>
@@ -46,11 +47,12 @@
 			/>
 			<label for="fed" class="font-semibold">Date fed (optional)</label>
 			<input
-				name="fed"
+				name="fed_local"
 				type="datetime-local"
 				class="border border-black rounded-md px-2 py-1 shadow"
 				value={date}
 			/>
+			<input name="fed" type="hidden" value={isoDate}>
 			<button
 				class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 mt-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95"
 				>Add Food</button
