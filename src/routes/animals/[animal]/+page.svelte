@@ -25,6 +25,8 @@
 			sort: '-fed'			
 		});
 		await pb.collection('feedings').delete(`${id}`);
+		
+		invalidateAll();
 
 		// if the record is NOT the latest then we don't care
 		if (lastFedRecord.id === id) {
@@ -33,8 +35,6 @@
 			});
 			const updateFed = await pb.collection('animals').update(`${$page.params.animal}`, {lastFed: newLastFed.fed})
 		}
-
-		invalidateAll();
 	}
 
 	async function deleteAnimal() {
