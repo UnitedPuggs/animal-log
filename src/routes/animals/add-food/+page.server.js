@@ -14,6 +14,7 @@ export const actions = {
 	add: async ({ locals, request }) => {
 		const formData = await request.formData();
 		const data = Object.fromEntries([...formData]);
+		console.log(data);
 		const date = data.fed ? new Date(data.fed) : new Date();
 
 		const feed_data = {

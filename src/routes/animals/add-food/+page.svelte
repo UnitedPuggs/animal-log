@@ -3,8 +3,8 @@
 	import { toDateTimeLocal } from '$lib/dates.js';
 
 	let selected = $state();
-	let date = $derived(toDateTimeLocal(data.date));
-	let isoDate = $derived(new Date(date).toISOString());
+	let fedLocal = $derived(toDateTimeLocal(data.date)); 
+	let isoDate = $derived(fedLocal ? new Date(fedLocal).toISOString() : new Date().toISOString());
 </script>
 
 <svelte:head>
@@ -50,7 +50,7 @@
 				name="fed_local"
 				type="datetime-local"
 				class="border border-black rounded-md px-2 py-1 shadow"
-				value={date}
+				bind:value={fedLocal}
 			/>
 			<input name="fed" type="hidden" value={isoDate}>
 			<button

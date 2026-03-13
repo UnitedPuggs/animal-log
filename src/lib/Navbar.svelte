@@ -1,45 +1,28 @@
 <script>
-	import { page } from '$app/stores';
-	import * as Sheet from '$lib/components/ui/sheet/index.js';
-	let { data } = $props();
+  import { page } from '$app/stores';
+  import { Home, PawPrint, UtensilsCrossed, QrCode } from 'lucide-svelte';
 
-	let open = $state(false);
-
-	function close() {
-		open = false;
-	}
-
-	function copyLink() {
-		navigator.clipboard.writeText(`${window.location.origin}/animals/share/${$page.data.user.id}`);
-		alert(`Copied ${window.location.origin}/animals/share/${$page.data.user.id} to clipboard!`);
-	}
+  const links = [
+    { href: '/animals', label: 'Home', icon: Home },
+    { href: '/animals/add-animal', label: 'Animals', icon: PawPrint },
+    { href: '/animals/add-food', label: 'Feed', icon: UtensilsCrossed },
+    { href: '/animals/add-food/scan', label: 'Scan', icon: QrCode },
+  ];
 </script>
 
-<nav class="px-1 py-4 bg-green-100 border-t border-gray-400 sticky bottom-0 mt-auto mb-0">
-	<div class="flex justify-evenly py-2 px-1 font-semibold text-center">
-		{#if $page.data?.user}
-			<a
-				href="/"
-				class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all"
-				>Home</a
-			>
-			<a
-				href="/animals/add-animal"
-				class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all"
-				>Animals</a
-			>
-			<a
-				href="/animals/add-food"
-				class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all"
-				>Feed</a
-			>
-			<a
-				href="/animals/add-food/scan"
-				class="font-bold border-2 border-black p-2 rounded-lg bg-white w-20 active:scale-85 transition-all"
-				>Scan</a
-			>
-			<!--<a href="/animals/inventory">Inventory</a>-->
-			<!--<button onclick={copyLink}>Share</button>-->
-		{/if}
-	</div>
+{#if $page.data?.user}
+<nav class="sticky bottom-0 mt-auto bg-white border-t border-gray-200 px-2 py-2">
+  <div class="flex justify-evenly">
+{#each links as link}
+  <a
+    href={link.href}
+    class="flex flex-col items-center gap-1 px-3 py-1 rounded-xl transition-all active:scale-95
+      {$page.url.pathname === link.href ? 'text-green-700' : 'text-gray-400 hover:text-gray-600'}"
+  >
+    <svelte:component this={link.icon} size={22} strokeWidth={$page.url.pathname === link.href ? 2.5 : 1.75} />
+    <span class="text-xs font-medium">{link.label}</span>
+  </a>
+{/each}
+  </div>
 </nav>
+{/if}

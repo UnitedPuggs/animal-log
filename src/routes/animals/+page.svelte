@@ -13,6 +13,7 @@
 	let feedings = $state([]);
 	let upcoming = $state(0);
 	let lastFeeds = $state({});
+	let today = new Date().toLocaleString("en-US", { weekday: "long", month: "long", day: "numeric" });
 
 	async function getLastFeed(id) {
 		const record = await pb.collection('feedings').getFirstListItem(`animal='${id}'`, {
@@ -63,8 +64,9 @@
 	<title>Your Animals</title>
 </svelte:head>
 
-<div class="flex flex-col gap-2">
-	<h1 class="font-semibold text-3xl">Good day, {$page.data.user.name.split(' ')[0]}! 🌞</h1>
+<div class="flex flex-col gap-1">
+	<h1 class="font-semibold text-2xl font-lora">Good day, {$page.data.user.name.split(' ')[0]}.</h1>
+	<span class="font-dm">{today}</span>
 	{#if upcoming > 0}
 		<!-- this is wrong because we don't do distinct per animal -->
 		<span class="text-gray-500"
@@ -73,35 +75,41 @@
 	{/if}
 	{#if animals.length > 0}
 		<div class="flex flex-col gap-2">
-			<h2 class="text-xl font-bold">Animals</h2>
+			<h2 class="text-sm font-dm text-gray-500 font-bold">YOUR ANIMALS</h2>
 			{#each animals as animal}
 				<div
-					class="flex flex-col gap-1 border-2 border-black bg-white shadow p-2 rounded-md transition-all h-fit"
+					class="flex flex-col gap-1 border border-black shadow p-2 rounded-md transition-all h-fit"
 				>
-					<a href="/animals/{animal.id}" class="flex flex-col">
-						<p class="text-lg font-semibold">{animal.name} the {animal.description}</p>
-						<span>Last fed <u>{lastFeeds[animal.id]}</u> {timeSince(new Date(animal.lastFed))}</span>
-						<span class="text-sm text-gray-500 my-1">Feed Days</span>
-						<hr class="mb-2" />
+					<a href="/animals/{animal.id}" class="flex flex-col gap-1">
+						<div class="flex flex-row">
+							<div class="p-6 bg-green-200 mr-2 rounded-lg">
+								<!-- icons here? -->
+							</div>
+							<div class="flex flex-col">
+								<p class="text-xl font-semibold font-lora">{animal.name}</p>
+								<span class="text-sm text-gray-500 font-dm">{animal.description}</span>	
+							</div>
+						</div>
+						<span class="font-dm">Last fed <span class="font-semibold text-sm border bg-gray-100 rounded-full px-2 font-mono">{lastFeeds[animal.id]}</span> {timeSince(new Date(animal.lastFed))}</span>
 						<section class="flex gap-1 flex-wrap">
 							{#each animal.dates as date}
 								<span
-									class="text-sm font-semibold px-2 py-1 rounded-md bg-blue-300 shadow w-12 text-center
+									class="text-sm font-semibold p-2 rounded-md w-10 text-center border-2 opacity-80
 								{getDayOfWeek(new Date()).substring(0, 3) == date.substring(0, 3)
-										? 'border-2 border-rose-500 scale-110'
-										: ''}"
+										? 'bg-teal-500 border-teal-600'
+										: 'bg-lime-400 border-lime-500'}"
 								>
-									{date.substring(0, 3)}
+									{date.substring(0, 2)}
 								</span>
 							{/each}
 						</section>
 					</a>
-					<div class="flex flex-row w-full justify-center gap-2 mt-2">
-						<a href="/animals/add-food?animal={animal.name}">
-							<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold">Add Feed +</button>
+					<div class="flex flex-row w-full justify-stretch gap-2 mt-2">
+						<a href="/animals/add-food?animal={animal.name}" class="w-full transition-all active:scale-90">
+							<button type="button" class="rounded-md border-2 px-2 py-1 font-semibold w-full">Add Feed +</button>
 						</a>
 						{#if lastFeeds[animal.id]?.length > 0}
-							<button type="button" class="rounded-md border-2 border-black px-2 py-1 font-semibold transition-all active:scale-90" onclick={async () => repeatLastFeed(animal.id) }>Repeat Last ↻</button>
+							<button type="button" class="rounded-md border-2 px-2 py-1 font-semibold transition-all active:scale-90 w-full" onclick={async () => repeatLastFeed(animal.id) }>Repeat Last ↻</button>
 						{/if}
 					</div>
 				</div>
