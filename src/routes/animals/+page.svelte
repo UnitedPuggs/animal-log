@@ -69,12 +69,10 @@
 	<span class="font-dm">{today}</span>
 	{#if upcoming > 0}
 		<!-- this is wrong because we don't do distinct per animal -->
-		<span class="text-gray-500"
-			><em>{upcoming} {upcoming > 1 ? 'animals need' : 'animal needs'} feeding today.</em></span
-		>
+		<span class="bg-amber-100 text-amber-900 p-2 border-l-4 border-amber-400">• {upcoming} {upcoming > 1 ? 'animals need' : 'animal needs'} feeding today.</span>
 	{/if}
 	{#if animals.length > 0}
-		<div class="flex flex-col gap-2">
+		<div class="flex flex-col gap-2 mt-5">
 			<h2 class="text-sm font-dm text-gray-500 font-bold">YOUR ANIMALS</h2>
 			{#each animals as animal}
 				<div
@@ -82,15 +80,20 @@
 				>
 					<a href="/animals/{animal.id}" class="flex flex-col gap-1">
 						<div class="flex flex-row">
-							<div class="p-6 bg-green-200 mr-2 rounded-lg">
+							<div class="p-4 bg-green-200 mr-2 rounded-lg">
 								<!-- icons here? -->
+								 tbd
 							</div>
 							<div class="flex flex-col">
 								<p class="text-xl font-semibold font-lora">{animal.name}</p>
 								<span class="text-sm text-gray-500 font-dm">{animal.description}</span>	
 							</div>
 						</div>
-						<span class="font-dm">Last fed <span class="font-semibold text-sm border bg-gray-100 rounded-full px-2 font-mono">{lastFeeds[animal.id]}</span> {timeSince(new Date(animal.lastFed))}</span>
+						{#if lastFeeds[animal.id]}
+							<span class="font-dm">Last fed <span class="font-semibold text-sm border bg-gray-100 rounded-full px-2 font-mono">{lastFeeds[animal.id]}</span> {timeSince(new Date(animal.lastFed))}</span>
+						{:else}
+							<span class="font-dm text-gray-400">No feeds logged</span>
+						{/if}
 						<section class="flex gap-1 flex-wrap">
 							{#each animal.dates as date}
 								<span

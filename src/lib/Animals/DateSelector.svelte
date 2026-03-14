@@ -7,7 +7,7 @@
 
 	$effect(() => {
 		const checked = days.reduce((acc, day) => {
-			acc[day] = selectedDays.includes(day);
+			acc[day] = selectedDays?.includes(day);
 			return acc;
 		}, {});
 
