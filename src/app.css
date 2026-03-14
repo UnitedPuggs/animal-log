@@ -122,6 +122,6 @@
 }
 
 @theme {
-	--font-lora: "Lora", sans-serif;
-	--font-dm: "DM Sans", sans-serif;
+	--font-lora: 'Lora', sans-serif;
+	--font-dm: 'DM Sans', sans-serif;
 }

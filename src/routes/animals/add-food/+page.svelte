@@ -3,7 +3,7 @@
 	import { toDateTimeLocal } from '$lib/dates.js';
 
 	let selected = $state();
-	let fedLocal = $derived(toDateTimeLocal(data.date)); 
+	let fedLocal = $derived(toDateTimeLocal(data.date));
 	let isoDate = $derived(fedLocal ? new Date(fedLocal).toISOString() : new Date().toISOString());
 </script>
 
@@ -52,7 +52,7 @@
 				class="border border-black rounded-md px-2 py-1 shadow"
 				bind:value={fedLocal}
 			/>
-			<input name="fed" type="hidden" value={isoDate}>
+			<input name="fed" type="hidden" value={isoDate} />
 			<button
 				class="border-2 border-black font-semibold rounded-lg w-26 mx-auto p-1 mt-1 bg-white box-shadow transition-all duration-200 hover:no-shadow hover:translate-x-1 hover:scale-95"
 				>Add Food</button

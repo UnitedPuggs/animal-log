@@ -24,7 +24,9 @@ export const actions = {
 		};
 
 		const addFeed = await pb.collection('feedings').create(feed_data);
-		const updateLastFed = await pb.collection('animals').update(`${data.animal}`, {lastFed: date});
+		const updateLastFed = await pb
+			.collection('animals')
+			.update(`${data.animal}`, { lastFed: date });
 
 		throw redirect(302, '/animals');
 	}

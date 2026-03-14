@@ -21,19 +21,25 @@
 	}
 
 	async function removeFeeding(id) {
-		const lastFedRecord = await pb.collection('feedings').getFirstListItem(`animal='${$page.params.animal}'`, {
-			sort: '-fed'			
-		});
+		const lastFedRecord = await pb
+			.collection('feedings')
+			.getFirstListItem(`animal='${$page.params.animal}'`, {
+				sort: '-fed'
+			});
 		await pb.collection('feedings').delete(`${id}`);
-		
+
 		invalidateAll();
 
 		// if the record is NOT the latest then we don't care
 		if (lastFedRecord.id === id) {
-			const newLastFed = await pb.collection('feedings').getFirstListItem(`animal='${$page.params.animal}'`, {
-			sort: '-fed'			
-			});
-			const updateFed = await pb.collection('animals').update(`${$page.params.animal}`, {lastFed: newLastFed.fed})
+			const newLastFed = await pb
+				.collection('feedings')
+				.getFirstListItem(`animal='${$page.params.animal}'`, {
+					sort: '-fed'
+				});
+			const updateFed = await pb
+				.collection('animals')
+				.update(`${$page.params.animal}`, { lastFed: newLastFed.fed });
 		}
 	}
 

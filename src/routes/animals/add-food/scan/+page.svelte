@@ -58,7 +58,7 @@
 
 	function onScanFailure(error) {
 		const ignoredErrors = ['NotFoundException', 'IndexSizeError'];
-		if (!ignoredErrors.some(err => error.includes(err))) {
+		if (!ignoredErrors.some((err) => error.includes(err))) {
 			console.warn(`Scanner error: ${error}`);
 		}
 	}
